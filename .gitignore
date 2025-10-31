@@ -259,6 +259,11 @@ tests/results/*
 !tests/results/benchmark_summary.html
 
 
-# Ignore models by default, but keep a placeholder file
+# --- Model files ---
 models/*
 !models/.gitkeep
+*.gguf
+*.bin
+*.pt
+*.safetensors
+
