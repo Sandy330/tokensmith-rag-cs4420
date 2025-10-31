@@ -251,8 +251,11 @@ index*/
 artifacts/
 artifacts*/
 
-# Results: keep summary files, ignore the rest
-tests/results
+# Ignore everything in tests/results …
+tests/results/*
+# …but keep the folder and these two files
+!tests/results/
 !tests/results/benchmark_results.json
 !tests/results/benchmark_summary.html
+
 
