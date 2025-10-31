@@ -32,7 +32,7 @@ def generate_summary_report(results_dir: Path):
     
     # Write HTML report
     html_file = results_dir / "benchmark_summary.html"
-    with open(html_file, 'w') as f:
+    with open(html_file, 'w', encoding="utf-8") as f:
         f.write(html_content)
     
     print(f"\nBenchmark results saved to:")

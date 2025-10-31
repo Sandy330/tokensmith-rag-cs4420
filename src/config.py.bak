@@ -66,7 +66,7 @@ class QueryPlanConfig:
             # Retrieval + Ranking
             top_k          = pick("top_k", 5),
             pool_size      = pick("pool_size", 60),
-            embed_model    = pick("embed_model", "llama.cpp/models/embeddings/nomic-embed-text-v1.5.Q4_K_S.gguf"),
+            embed_model    = pick("embed_model", "sentence-transformers/all-MiniLM-L6-v2"),
             ensemble_method= pick("ensemble_method", "rrf"),
             rrf_k          = pick("rrf_k", 60),
             ranker_weights = pick("ranker_weights", {"faiss":0.6,"bm25":0.4}),
