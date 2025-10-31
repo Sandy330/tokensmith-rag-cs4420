@@ -30,12 +30,7 @@ data/
 *.faiss
 *.pkl
 
-# --- Model files ---
-models/
-*.gguf
-*.bin
-*.pt
-*.safetensors
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -259,11 +254,16 @@ tests/results/*
 !tests/results/benchmark_summary.html
 
 
-# --- Model files ---
-models/*
-!models/.gitkeep
+# --- Model files (keep folder, ignore weights) ---
+models/              # declare the directory
+!models/             # re-include the folder itself
+models/*             # ignore contents by default
+!models/.gitkeep     # keep placeholder file
+
+# ignore large model weights
 *.gguf
 *.bin
 *.pt
 *.safetensors
+
 
