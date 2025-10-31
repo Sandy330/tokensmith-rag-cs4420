@@ -245,8 +245,6 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-tests/results
-
 # --- TokenSmith artifacts ---
 index/
 index*/
