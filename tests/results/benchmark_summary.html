@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TokenSmith Benchmark Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .summary { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .test-result { 
+            border: 1px solid #ddd; 
+            margin: 10px 0; 
+            padding: 15px; 
+            border-radius: 5px; 
+            min-width: 0;
+        }
+        .passed { border-left: 5px solid #4CAF50; }
+        .failed { border-left: 5px solid #f44336; }
+        .score { font-weight: bold; color: #2196F3; }
+        .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 10px 0; }
+        .metric-item { background: #f9f9f9; padding: 10px; border-radius: 3px; }
+        pre { 
+            background: #f9f9f9; 
+            padding: 10px; 
+            border-radius: 3px; 
+            white-space: pre;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>TokenSmith Benchmark Results</h1>
+    
+    <div class="summary">
+        <h2>Summary</h2>
+        <p><strong>Total Tests:</strong> 6</p>
+        <p><strong>Passed:</strong> 6 (100.0%)</p>
+        <p><strong>Failed:</strong> 0</p>
+        <p><strong>Average Score:</strong> 0.847</p>
+        <p><strong>Score Range:</strong> 0.796 - 0.924</p>
+        <p><strong>Active Metrics:</strong> keyword, nli, semantic</p>
+        
+        <h3>Per-Metric Averages</h3>
+        <div class="metric-grid">
+    <div class="metric-item"><strong>Keyword:</strong> 0.578</div><div class="metric-item"><strong>Nli:</strong> 0.947</div><div class="metric-item"><strong>Semantic:</strong> 0.809</div></div></div><h2>Detailed Results</h2>
+    <div class="test-result passed">
+        <h3>Explain natural join, theta join, and outer join in relational algebra, and state associativity/commutativity properties relevant to query optimization - <span class="score">PASSED</span></h3>
+        <p><strong>Final Score:</strong> <span class="score">0.924</span></p>
+        <p><strong>Threshold:</strong> 0.780</p>
+        <p><strong>Active Metrics:</strong> semantic, keyword, nli</p>
+        
+        <div class="metric-grid">
+        <div class="metric-item"><strong>Semantic Similarity:</strong> 0.881</div><div class="metric-item"><strong>Keyword Similarity:</strong> 0.750</div><div class="metric-item"><strong>Nli Similarity:</strong> 0.997</div><div class="metric-item"><strong>Keywords Matched:</strong> 3/4</div>
+        </div>
+        
+        <h4>Expected Answer:</h4>
+        <pre>Natural join forms a Cartesian product, selects tuples with equal values on common attributes, and removes duplicate attributes, while theta join combines a Cartesian product with a general predicate; both enable combining relations under conditions, and natural join is commutative and associative, which supports join reordering in optimization; outer joins (left, right, full) extend join by padding unmatched tuples with nulls to avoid loss of information and follow join semantics except where unmatched tuples are added with nulls.</pre>
+        
+        <h4>Retrieved Answer:</h4>
+        <pre>- Natural join: take the Cartesian product, select tuples with equality on all common attributes, then remove duplicate attributes.
+- Theta join (theta-join): Cartesian product with an arbitrary predicate (e.g., <, >, !=, <=, >=).
+- Outer join: left/right/full; include unmatched tuples padded with NULLs.
+- Properties: natural join is commutative and associative; enables join reordering.</pre>
+    </div>
+        
+    <div class="test-result passed">
+        <h3>How do aggregation with grouping and generalized projection work, and how are nulls treated in selections, joins, projections, set operations, and aggregates - <span class="score">PASSED</span></h3>
+        <p><strong>Final Score:</strong> <span class="score">0.815</span></p>
+        <p><strong>Threshold:</strong> 0.800</p>
+        <p><strong>Active Metrics:</strong> semantic, keyword, nli</p>
+        
+        <div class="metric-grid">
+        <div class="metric-item"><strong>Semantic Similarity:</strong> 0.788</div><div class="metric-item"><strong>Keyword Similarity:</strong> 0.667</div><div class="metric-item"><strong>Nli Similarity:</strong> 0.874</div><div class="metric-item"><strong>Keywords Matched:</strong> 4/6</div>
+        </div>
+        
+        <h4>Expected Answer:</h4>
+        <pre>Aggregation partitions tuples by grouping attributes and applies functions like sum, avg, min, max to each group, producing one result per group; generalized projection permits arithmetic expressions and attribute renaming in the projection list; with nulls, selections treat comparisons as unknown and exclude them, joins inherit selection semantics, projections and set operations treat identical tuples with nulls as duplicates, and aggregates ignore nulls in aggregated attributes and return null only when the multiset is empty.</pre>
+        
+        <h4>Retrieved Answer:</h4>
+        <pre>In summary:
+
+1. **Definition**: Tuples are partitioned by grouping attributes during aggregate operations. The sum of count values is computed on each grouped subset. 2. **Generalized Projection**:
+   - Allows arithmetic expressions and attribute renaming within the projection list. 3. **Null Handling**:
+   - Selections handle comparison with null as "UNKNOWN" and filter them out. - Joins use inherited selections, filtering by null values. - Projections and set operations treat NULLs based on their presence or absence. - Aggregates ignore NULLs when computing the aggregated attribute. 4. **One Valid SQL Example Using Numeric Aggregates Only**:
+   ```sql
+   SELECT SUM(COUNT(item_name)) AS total_sales FROM sales;
+   ```
+   This query computes a single output tuple per group for all items, ignoring any NULL values present in the GROUP BY clause.</pre>
+    </div>
+        
+    <div class="test-result passed">
+        <h3>What are the ACID properties of transactions, and how do concurrency control and recovery components enforce them during concurrent execution and failures - <span class="score">PASSED</span></h3>
+        <p><strong>Final Score:</strong> <span class="score">0.881</span></p>
+        <p><strong>Threshold:</strong> 0.820</p>
+        <p><strong>Active Metrics:</strong> semantic, keyword, nli</p>
+        
+        <div class="metric-grid">
+        <div class="metric-item"><strong>Semantic Similarity:</strong> 0.875</div><div class="metric-item"><strong>Keyword Similarity:</strong> 0.500</div><div class="metric-item"><strong>Nli Similarity:</strong> 0.998</div><div class="metric-item"><strong>Keywords Matched:</strong> 4/8</div>
+        </div>
+        
+        <h4>Expected Answer:</h4>
+        <pre>Atomicity ensures a transaction's actions are all-or-nothing, enforced by abort/rollback and recovery that can undo partial effects; consistency requires each transaction to preserve database integrity when run alone and relies on the scheduler to admit serializable, recoverable, and preferably cascadeless schedules; isolation makes concurrent executions equivalent to some serial order, commonly achieved with two-phase locking variants that prevent reads of uncommitted data; durability guarantees committed effects persist across crashes via logging to stable storage and redo on restart; together, the transaction manager, concurrency-control (e.g., lock manager under strict 2PL), and recovery manager (logging/checkpoints) provide these guarantees, and in distributed settings coordinators run two-phase commit to atomically commit across sites.</pre>
+        
+        <h4>Retrieved Answer:</h4>
+        <pre>- Atomicity ensures that each transaction's actions are indivisible. - Durability guarantees data consistency across multiple transactions even if some fail. - Isolation prevents conflicts between different transactions without interference from others. - Consistency maintains data integrity when multiple transactions update simultaneously. In a distributed system with multiple nodes, ensuring these properties requires careful management by the concurrency control manager and recovery mechanisms. For example, log-based recovery involves recording changes made by previous transactions so that they can be undone later, while concurrency control techniques like locking ensure that only authorized processes can access shared resources. The combination of these methods helps maintain consistent database states despite concurrent executions and failures.</pre>
+    </div>
+        
+    <div class="test-result passed">
+        <h3>How does a B+ tree index organize keys and support search, insert, and delete, and why is it preferred over binary trees for disk-based access - <span class="score">PASSED</span></h3>
+        <p><strong>Final Score:</strong> <span class="score">0.796</span></p>
+        <p><strong>Threshold:</strong> 0.780</p>
+        <p><strong>Active Metrics:</strong> semantic, keyword, nli</p>
+        
+        <div class="metric-grid">
+        <div class="metric-item"><strong>Semantic Similarity:</strong> 0.875</div><div class="metric-item"><strong>Keyword Similarity:</strong> 0.400</div><div class="metric-item"><strong>Nli Similarity:</strong> 0.875</div><div class="metric-item"><strong>Keywords Matched:</strong> 2/5</div>
+        </div>
+        
+        <h4>Expected Answer:</h4>
+        <pre>A B+ tree is a balanced, multiway search tree where all keys appear in the leaf level linked for range scans, and internal nodes guide search using separators; search descends from root to a leaf in height proportional to log base fan-out, insert splits full nodes to maintain balance, and delete may redistribute or merge nodes to keep occupancy; high fan-out reduces tree height and I/O, making B+ trees efficient on disk and better than binary trees whose height and I/O would be much larger.</pre>
+        
+        <h4>Retrieved Answer:</h4>
+        <pre>- Structure: A B+ tree is a balanced multiway search tree. Internal nodes store separator keys only (no records). All keys/records are at the leaf level, and leaves are linked for efficient range scans.
+- Search: From root to leaf by following separators; height approx log_f(N) where f is fan-out (branching factor). Cost is measured in page I/Os.
+- Insert: On overflow, split the full node and promote the median key to the parent; the tree stays balanced.
+- Delete: On underflow, merge or redistribute with a sibling to maintain >= ceil(m/2) occupancy.
+- Why better than binary trees on disk: large fan-out makes the tree shallow -> far fewer page I/Os. Think log_f(N) pages vs log_2(N) pages for a binary tree; nodes are sized to page/block boundaries and leaf links speed range scans.</pre>
+    </div>
+        
+    <div class="test-result passed">
+        <h3>What are functional dependencies and how are they used to achieve BCNF or 3NF through lossless, dependency-preserving decomposition - <span class="score">PASSED</span></h3>
+        <p><strong>Final Score:</strong> <span class="score">0.824</span></p>
+        <p><strong>Threshold:</strong> 0.700</p>
+        <p><strong>Active Metrics:</strong> semantic, keyword, nli</p>
+        
+        <div class="metric-grid">
+        <div class="metric-item"><strong>Semantic Similarity:</strong> 0.772</div><div class="metric-item"><strong>Keyword Similarity:</strong> 0.400</div><div class="metric-item"><strong>Nli Similarity:</strong> 0.977</div><div class="metric-item"><strong>Keywords Matched:</strong> 2/5</div>
+        </div>
+        
+        <h4>Expected Answer:</h4>
+        <pre>A functional dependency X -> Y asserts that tuples agreeing on X must agree on Y; BCNF requires every nontrivial FD have a superkey on the left, while 3NF relaxes this by allowing attributes on the right that are part of a key; normalization decomposes a relation into smaller ones such that the join is lossless (typically ensured by a common key/FD condition) and preferably preserves dependencies so that constraints can be enforced without recomputation; BCNF eliminates redundancy more aggressively but may not preserve all FDs, whereas 3NF guarantees dependency preservation with minimal redundancy.</pre>
+        
+        <h4>Retrieved Answer:</h4>
+        <pre>Functional Dependencies:
+
+FD: X->Y means that elements in tuple X also appear in element Y. This property helps ensure that there is no duplication between different sets of data. BCNF:
+
+For every non-trivial FD X->Y, X should be a superkey. In other words, any combination of attributes in X should form a unique key. Lossless Join:
+
+Decomposition R -> {R1, R2, ...} is lossless if a common attribute set is a key for one component or if (Ri n Rj) -> Ri or Rj holds. Dependency-Preserving:
+
+The union of projected FDs implies all original FDs. If result contains all attributes from F, then it represents a dependency-preserving decomposition into 3NF. Trade-off:
+
+BCNF minimizes redundancy by ensuring each schema has a dependency-preserving decomposition into 3NF. However, it does not guarantee all FDs are preserved. 3NF ensures only those FDs where at least one key exists.</pre>
+    </div>
+        
+    <div class="test-result passed">
+        <h3>What isolation guarantees does SQL provide by default, what anomalies can occur at weaker levels, and how do stricter levels prevent them - <span class="score">PASSED</span></h3>
+        <p><strong>Final Score:</strong> <span class="score">0.845</span></p>
+        <p><strong>Threshold:</strong> 0.700</p>
+        <p><strong>Active Metrics:</strong> semantic, keyword, nli</p>
+        
+        <div class="metric-grid">
+        <div class="metric-item"><strong>Semantic Similarity:</strong> 0.665</div><div class="metric-item"><strong>Keyword Similarity:</strong> 0.750</div><div class="metric-item"><strong>Nli Similarity:</strong> 0.964</div><div class="metric-item"><strong>Keywords Matched:</strong> 6/8</div>
+        </div>
+        
+        <h4>Expected Answer:</h4>
+        <pre>SQL's serializable level aims for schedules equivalent to some serial execution and prevents phenomena like dirty reads, nonrepeatable reads, and phantoms; weaker levels like read committed prevent dirty reads but allow nonrepeatable reads and phantoms, while repeatable read prevents nonrepeatable reads but may still allow phantoms; strict two-phase locking or predicate locking/index locking can enforce serializability by holding appropriate locks until commit, eliminating these anomalies.</pre>
+        
+        <h4>Retrieved Answer:</h4>
+        <pre>- Levels: READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE.
+- Anomalies: dirty read, nonrepeatable read, phantom.
+- Prevention: read committed prevents dirty reads; repeatable read prevents nonrepeatable reads; serializable prevents phantoms (e.g., predicate/index locking under strict 2PL).</pre>
+    </div>
+        </body>
+</html>
