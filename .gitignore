@@ -246,3 +246,15 @@ marimo/_lsp/
 __marimo__/
 
 tests/results
+
+# --- TokenSmith artifacts ---
+index/
+index*/
+artifacts/
+artifacts*/
+
+# Results: keep summary files, ignore the rest
+tests/results
+!tests/results/benchmark_results.json
+!tests/results/benchmark_summary.html
+
