@@ -31,16 +31,15 @@ data/
 *.pkl
 
 # --- Model files (keep folder, ignore weights) ---
-models/              # declare the directory
-!models/             # re-include the folder itself
-models/*             # ignore contents by default
-!models/.gitkeep     # keep placeholder file
+/models/*                 # ignore everything under models
+!/models/.gitkeep         # but keep the placeholder
 
-# ignore large model weights
+# ignore large model weights globally
 *.gguf
 *.bin
 *.pt
 *.safetensors
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
