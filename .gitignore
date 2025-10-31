@@ -259,3 +259,6 @@ tests/results/*
 !tests/results/benchmark_summary.html
 
 
+# Ignore models by default, but keep a placeholder file
+models/*
+!models/.gitkeep
