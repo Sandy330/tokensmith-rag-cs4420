@@ -31,7 +31,7 @@ data/
 *.pkl
 
 # --- Model files (keep folder, ignore weights) ---
-/models/*                 # ignore everything under models
+models/*                 # ignore everything under models
 !/models/.gitkeep         # but keep the placeholder
 
 # ignore large model weights globally
