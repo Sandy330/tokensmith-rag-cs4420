@@ -11,16 +11,15 @@ import os
 import pickle
 import pathlib
 import re
-from typing import List, Dict
+from typing import List, Dict, Any
 
 import faiss
 from rank_bm25 import BM25Okapi
-from src.embedder import SentenceTransformer
 
+from src.embedder import SentenceTransformer
 from src.preprocessing.chunking import DocumentChunker, ChunkConfig
 from src.preprocessing.extraction import extract_sections_from_markdown
-from src.config import QueryPlanConfig
-
+from src.config import QueryPlanConfig  # kept for compatibility / future use
 
 # ----- runtime parallelism knobs (avoid oversubscription) -----
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -33,9 +32,11 @@ os.environ["NUMEXPR_NUM_THREADS"] = "1"
 TABLE_RE = re.compile(r"<table>.*?</table>", re.DOTALL | re.IGNORECASE)
 
 # Default keywords to exclude sections
-DEFAULT_EXCLUSION_KEYWORDS = ['questions', 'exercises', 'summary', 'references']
+DEFAULT_EXCLUSION_KEYWORDS = ["questions", "exercises", "summary", "references"]
+
 
 # ------------------------ Main index builder -----------------------------
+
 
 def build_index(
     markdown_file: str,
@@ -44,7 +45,7 @@ def build_index(
     chunk_config: ChunkConfig,
     embedding_model_path: str,
     artifacts_dir: os.PathLike,
-    index_prefix: str, 
+    index_prefix: str,
     do_visualize: bool = False,
 ) -> None:
     """
@@ -59,42 +60,62 @@ def build_index(
     """
     all_chunks: List[str] = []
     sources: List[str] = []
-    metadata: List[Dict] = []
+    metadata: List[Dict[str, Any]] = []
 
     # Extract sections from markdown. Exclude some with certain
     # keywords if required.
     sections = extract_sections_from_markdown(
         markdown_file,
-        exclusion_keywords=DEFAULT_EXCLUSION_KEYWORDS
+        exclusion_keywords=DEFAULT_EXCLUSION_KEYWORDS,
     )
 
     # Step 1: Chunk using DocumentChunker
-    for i, c in enumerate(sections):
-        has_table = bool(TABLE_RE.search(c['content']))
-        meta = {
+    for section_idx, sec in enumerate(sections):
+        content = sec["content"]
+        heading = sec.get("heading", None)
+
+        # Try to capture page-ish info if extraction provides it
+        page = sec.get("page") or sec.get("page_num")
+        has_table = bool(TABLE_RE.search(content))
+
+        base_meta: Dict[str, Any] = {
             "filename": markdown_file,
-            "chunk_id": i,
+            "section_index": section_idx,
+            "section": heading,
             "mode": chunk_config.to_string(),
             "keep_tables": chunker.keep_tables,
-            "char_len": len(c['content']),
-            "word_len": len(c['content'].split()),
+            "char_len": len(content),
+            "word_len": len(content.split()),
             "has_table": has_table,
-            "section": c['heading'], 
-            "text_preview": c['content'][:100]
+            "text_preview": content[:100],
         }
-        
-        # Use DocumentChunker to recursively split this section
-        sub_chunks = chunker.chunk(c['content'])
-        for sub_c in sub_chunks:
+        if page is not None:
+            base_meta["page"] = page
+
+        # Use DocumentChunker to split this section into smaller chunks
+        sub_chunks = chunker.chunk(content)
+
+        for local_idx, sub_c in enumerate(sub_chunks):
+            # store the text chunk
             all_chunks.append(sub_c)
             sources.append(markdown_file)
-            metadata.append(meta)
+
+            # clone metadata and add per-subchunk info
+            m = dict(base_meta)
+            m["subchunk_index"] = local_idx
+            m["global_chunk_index"] = len(all_chunks) - 1
+            metadata.append(m)
 
     # Step 2: Create embeddings for FAISS index
-    print(f"Embedding {len(all_chunks):,} chunks with {pathlib.Path(embedding_model_path).stem} ...")
+    print(
+        f"Embedding {len(all_chunks):,} chunks with "
+        f"{pathlib.Path(embedding_model_path).stem} ..."
+    )
     embedder = SentenceTransformer(embedding_model_path)
     embeddings = embedder.encode(
-        all_chunks, batch_size=4, show_progress_bar=True
+        all_chunks,
+        batch_size=4,
+        show_progress_bar=True,
     )
 
     # Step 3: Build FAISS index
@@ -102,32 +123,33 @@ def build_index(
     dim = embeddings.shape[1]
     index = faiss.IndexFlatL2(dim)
     index.add(embeddings)
-    faiss.write_index(index, str(artifacts_dir / f"{index_prefix}.faiss"))
-    print(f"FAISS Index built successfully: {index_prefix}.faiss")
+    faiss.write_index(index, str(pathlib.Path(artifacts_dir) / f"{index_prefix}.faiss"))
+    print(f"FAISS index built successfully: {index_prefix}.faiss")
 
     # Step 4: Build BM25 index
     print(f"Building BM25 index for {len(all_chunks):,} chunks...")
     tokenized_chunks = [preprocess_for_bm25(chunk) for chunk in all_chunks]
     bm25_index = BM25Okapi(tokenized_chunks)
-    with open(artifacts_dir / f"{index_prefix}_bm25.pkl", "wb") as f:
+    with open(pathlib.Path(artifacts_dir) / f"{index_prefix}_bm25.pkl", "wb") as f:
         pickle.dump(bm25_index, f)
-    print(f"BM25 Index built successfully: {index_prefix}_bm25.pkl")
+    print(f"BM25 index built successfully: {index_prefix}_bm25.pkl")
 
     # Step 5: Dump index artifacts
-    with open(artifacts_dir / f"{index_prefix}_chunks.pkl", "wb") as f:
+    with open(pathlib.Path(artifacts_dir) / f"{index_prefix}_chunks.pkl", "wb") as f:
         pickle.dump(all_chunks, f)
-    with open(artifacts_dir / f"{index_prefix}_sources.pkl", "wb") as f:
+    with open(pathlib.Path(artifacts_dir) / f"{index_prefix}_sources.pkl", "wb") as f:
         pickle.dump(sources, f)
-    with open(artifacts_dir / f"{index_prefix}_meta.pkl", "wb") as f:
+    with open(pathlib.Path(artifacts_dir) / f"{index_prefix}_meta.pkl", "wb") as f:
         pickle.dump(metadata, f)
     print(f"Saved all index artifacts with prefix: {index_prefix}")
 
-    # # Step 6: Optional visualization
+    # Step 6: Optional visualization
     if do_visualize:
         visualize(embeddings, sources)
 
 
 # ------------------------ Helper functions ------------------------------
+
 
 def preprocess_for_bm25(text: str) -> list[str]:
     """

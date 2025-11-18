@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 import yaml
@@ -210,10 +211,10 @@ def benchmarks(pytestconfig, config):
     if selected_ids:
         id_set = set(id.strip() for id in selected_ids.split(','))
         filtered = [b for b in all_benchmarks if b['id'] in id_set]
-        print(f"\n📋 Running {len(filtered)} selected benchmarks: {', '.join(id_set)}")
+        print(f"\nRunning {len(filtered)} selected benchmarks: {', '.join(id_set)}")
         return filtered
     
-    print(f"\n📋 Running all {len(all_benchmarks)} benchmarks")
+    print(f"\nRunning all {len(all_benchmarks)} benchmarks")
     return all_benchmarks
 
 
