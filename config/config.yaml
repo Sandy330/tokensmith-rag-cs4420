@@ -1,14 +1,15 @@
-﻿embed_model: "llama.cpp/models/embeddings/nomic-embed-text-v1.5.Q4_K_S.gguf"
-model_path: "llama.cpp/models/qwen2.5-0.5b-instruct-q5_k_m.gguf"
-
-top_k: 12
-pool_size: 120
+embed_model: "models/Qwen3-Embedding-4B-Q5_K_M.gguf"
+top_k: 5
+pool_size: 50
 ensemble_method: "rrf"
+ranker_weights: {"faiss":1,"bm25":0}
 rrf_k: 60
-ranker_weights: [1.0, 1.0]
-
-chunk_mode: "sections"
-
-
-system_prompt_mode: "tutor"
-max_gen_tokens: 350
+max_gen_tokens: 400
+seg_filter: null
+chunk_mode : "sections"
+model_path: "models/qwen2.5-1.5b-instruct-q5_k_m.gguf"
+recursive_chunk_size: 2000
+recursive_overlap: 200
+use_hyde: false
+hyde_max_tokens: 600
+use_indexed_chunks: false
